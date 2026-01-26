@@ -1,0 +1,6 @@
+@HomerServer.ExtApi_HostAddress = http://localhost:5168
+
+GET {{HomerServer.ExtApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
