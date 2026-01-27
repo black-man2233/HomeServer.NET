@@ -1,4 +1,10 @@
+using System;
+using System.Net;
+using System.Text;
+using Bogus;
+using HomerServer.ExtApi.Clients;
 using HomerServer.ExtApi.models;
+using HomerServer.ExtApi.models.NetData;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomerServer.ExtApi.controllers;
@@ -7,16 +13,42 @@ namespace HomerServer.ExtApi.controllers;
 [Route("api/[controller]")]
 public class StatsController : ControllerBase
 {
+    private readonly NetdataClient _netdata;
+
+    public StatsController(NetdataClient netdata) => _netdata = netdata;
+
     [HttpGet]
-    public ActionResult<ServerStats> Get()
+    public async Task<ActionResult<ServerStats>> GetStats()
     {
-        var res = new ServerStats()
-        {
-            CPU = 99,
-            RAM = 35,
-            Ip = "127.0.0.1",
-            UpTime = new TimeSpan(5000) + " Hours"
-        };
-        return Ok(res);
+        var stats = await _netdata.GetServerStatsAsync();
+        if (stats is null)
+            return NotFound();
+        return Ok(stats);
+    }
+
+    [HttpGet("ramusage")]
+    public async Task<ActionResult<NetDataRamUsage>> GetRamUsage()
+    {
+        var stats = await _netdata.GetRamUsage();
+        if (stats is null)
+            return NotFound();
+        return Ok(stats);
+    }
+
+    [HttpGet("cpuusage")]
+    public async Task<ActionResult<NetDataRamUsage>> GetCpuUage()
+    {
+        var stats = await _netdata.GetCPUUsage();
+        if (stats is null)
+            return NotFound();
+        return Ok(stats);
+    }
+    [HttpGet("uptime")]
+    public async Task<ActionResult<NetDataRamUsage>> GetUpTime()
+    {
+        var stats = await _netdata.GetUpTime();
+        if (stats is null)
+            return NotFound();
+        return Ok(stats);
     }
 }

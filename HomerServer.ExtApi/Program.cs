@@ -1,3 +1,8 @@
+using HomerServer.ExtApi.models;
+using Microsoft.AspNetCore.Mvc;
+using HomerServer.ExtApi.Clients;
+using HomeServer.ExtApi.Models;
+using HomeServer.ExtApi.Models.Config;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
@@ -15,10 +20,18 @@ builder.Services.AddCors(options =>
     });
 });
 
+
+builder.Services.AddSingleton<NetdataClient>(sp =>
+{
+    var config = builder.Configuration.GetSection("Netdata").Get<NetdataOptions>();
+    var client = new NetdataClient(new HttpClient());
+    client.Configure(config!.BaseUrl, config.BearerToken, config.XAuthToken);
+    return client;
+});
+
 var app = builder.Build();
 
 // 🔴 ORDER MATTERS
-
 app.UseCors("DevCors");        // ✅ MUST be here
 app.UseHttpsRedirection();
 
