@@ -7,14 +7,22 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
-builder.Services.AddControllers();
+// builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.SuppressAsyncSuffixInActionNames = true;
+});
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("DevCors", policy =>
     {
         policy
-            .WithOrigins("http://localhost:8100")
+        .AllowAnyOrigin()
+            // .WithOrigins("http://localhost:8100," +
+            //             "http://coolserver.oryx-cirius.ts.net," +
+            //             "huaweiserver.oryx-cirius.ts.net" +
+            //             "iphone-15-pro.oryx-cirius.ts.net")
             .AllowAnyMethod()
             .AllowAnyHeader();
     });
