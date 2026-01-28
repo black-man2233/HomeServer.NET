@@ -1,0 +1,22 @@
+version: '3.9'
+
+services:
+  # HomerServer External API service
+  homerserver-extapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: homerserver-extapi
+    ports:
+      - "7192:7192"
+      - "5168:5168"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5168
+      - Netdata__BaseUrl=http://127.0.0.1:3004
+      - Netdata__BearerToken=${NETDATA_BEARER_TOKEN:-ndc.1RLGUzUGZlzLPaN07MI9gLxMaI42hjxg9fZOLWVikl6sQq08QobGh2FmYr93FrNUotuWr8quHwcCIrxk9xcsWigHP8Dv5GBc4phCAfE0O6882mB5luJ4NkjDVI0SEVrl}
+    network_mode: "host"
+    volumes:
+      - ./HomerServer.ExtApi:/app/src
+    restart: unless-stopped
+
